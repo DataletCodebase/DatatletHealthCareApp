@@ -1,23 +1,23 @@
+import AuthButton from '@/components/AuthButton';
+import { AVPlaybackStatus, ResizeMode, Video } from 'expo-av';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
   Animated,
-  Pressable,
+  Dimensions,
   Image,
   Linking,
   Platform,
-  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
-import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
-export default function LoginScreen() {
+export default function WelcomeScreen() {
   const router = useRouter();
   const videoRef = useRef<Video>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -25,7 +25,6 @@ export default function LoginScreen() {
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(40)).current;
-  const buttonScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     // Fade-in + slide-up on mount
@@ -45,28 +44,22 @@ export default function LoginScreen() {
     ]).start();
   }, []);
 
+  useEffect(() => {
+    // Autoplay fallback
+    if (videoRef.current) {
+      videoRef.current.playAsync().catch(() => {
+        // Ignore playback errors
+      });
+    }
+  }, [videoLoaded]);
+
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status.isLoaded && !videoLoaded) {
       setVideoLoaded(true);
+      if (videoRef.current) {
+        videoRef.current.playAsync();
+      }
     }
-  };
-
-  const handlePressIn = () => {
-    Animated.spring(buttonScale, {
-      toValue: 0.95,
-      useNativeDriver: true,
-      speed: 50,
-      bounciness: 4,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(buttonScale, {
-      toValue: 1,
-      useNativeDriver: true,
-      speed: 50,
-      bounciness: 4,
-    }).start();
   };
 
   const handleLoginPress = () => {
@@ -90,7 +83,7 @@ export default function LoginScreen() {
         onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
       />
 
-      {/* ── Dark overlay ── */}
+      {/* ── Light overlay for typography contrast ── */}
       <View style={styles.overlay} />
 
       <SafeAreaView style={styles.safeArea}>
@@ -123,18 +116,11 @@ export default function LoginScreen() {
           ]}
         >
           {/* CTA Button */}
-          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-            <Pressable
-              onPressIn={handlePressIn}
-              onPressOut={handlePressOut}
-              onPress={handleLoginPress}
-              style={styles.loginButton}
-              accessibilityRole="button"
-              accessibilityLabel="Log In or Sign Up"
-            >
-              <Text style={styles.loginButtonText}>Log In / Sign Up</Text>
-            </Pressable>
-          </Animated.View>
+          <AuthButton
+            label="Log In / Sign Up"
+            onPress={handleLoginPress}
+            style={styles.loginButtonContainer}
+          />
 
           {/* Footer Legal */}
           <View style={styles.footerRow}>
@@ -159,7 +145,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A1628', // fallback while video loads
+    backgroundColor: '#0A1628',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -188,7 +174,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.45,
     shadowRadius: 20,
-    elevation: 16,
+    elevation: 8,
+    backgroundColor: 'transparent',
   },
   logo: {
     width: '100%',
@@ -197,14 +184,14 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 36,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: 'black',
     letterSpacing: 0.5,
     textAlign: 'center',
     marginBottom: 8,
   },
   tagline: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.60)',
+    color: 'rgba(5, 5, 5, 0.6)',
     letterSpacing: 0.3,
     textAlign: 'center',
     fontWeight: '400',
@@ -217,24 +204,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
-  loginButton: {
+  loginButtonContainer: {
     width: width - 56,
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 10,
-  },
-  loginButtonText: {
-    color: '#0A1628',
-    fontSize: 17,
-    fontWeight: '700',
-    letterSpacing: 0.4,
   },
 
   // ── FOOTER ──
@@ -247,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   footerText: {
-    color: 'rgba(255,255,255,0.45)',
+    color: '#d1d9e8ff',
     fontSize: 11.5,
     lineHeight: 18,
   },

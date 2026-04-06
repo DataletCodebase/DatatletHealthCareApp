@@ -29,7 +29,7 @@ export default function AuthInput({
       <View style={[styles.inputRow, error ? styles.inputError : null]}>
         <TextInput
           style={styles.input}
-          placeholderTextColor="rgba(255,255,255,0.35)"
+          placeholderTextColor="#9CA3AF"
           secureTextEntry={isPassword && !Show}
           autoCapitalize="none"
           {...props}
@@ -39,7 +39,7 @@ export default function AuthInput({
             <Ionicons
               name={Show ? 'eye-outline' : 'eye-off-outline'}
               size={20}
-              color="rgba(255,255,255,0.5)"
+              color="#9CA3AF"
             />
           </TouchableOpacity>
         )}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    color: 'rgba(255,255,255,0.75)',
+    color: '#374151',
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 8,
@@ -63,19 +63,24 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.10)',
-    borderRadius: 14,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: '#E5E7EB',
     paddingHorizontal: 16,
     height: 52,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   inputError: {
-    borderColor: '#FF6B6B',
+    borderColor: '#EF4444',
   },
   input: {
     flex: 1,
-    color: '#FFFFFF',
+    color: '#111827',
     fontSize: 15,
     fontWeight: '400',
   },
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   errorText: {
-    color: '#FF6B6B',
+    color: '#EF4444',
     fontSize: 12,
     marginTop: 5,
     marginLeft: 2,

@@ -1,19 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import AuthButton from '@/components/AuthButton';
+import AuthInput from '@/components/AuthInput';
+import { sendPhoneOTP } from '@/services/firebase';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
   Animated,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import AuthInput from '@/components/AuthInput';
-import AuthButton from '@/components/AuthButton';
-import { sendPhoneOTP } from '@/services/firebase';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -89,9 +89,11 @@ export default function SignUpScreen() {
           >
             <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
               {/* Header */}
-              <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-                <Text style={styles.backText}>← Back</Text>
-              </TouchableOpacity>
+              <AuthButton
+                label="← Back"
+                onPress={() => router.back()}
+                style={styles.backBtn}
+              />
 
               <Text style={styles.title}>Create Account</Text>
               <Text style={styles.subtitle}>Join Datalet Health — your wellness journey starts here.</Text>
@@ -149,22 +151,25 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A1628' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
   safe: { flex: 1 },
   scroll: { flexGrow: 1, paddingHorizontal: 28, paddingTop: 16, paddingBottom: 40 },
 
-  backBtn: { marginBottom: 28 },
-  backText: { color: 'rgba(255,255,255,0.55)', fontSize: 15 },
+  backBtn: { 
+    marginBottom: 28,
+    marginTop: 20,
+    alignSelf: 'flex-start',
+  },
 
   title: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#111827',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.50)',
+    color: '#6B7280',
     lineHeight: 20,
     marginBottom: 36,
   },
@@ -172,7 +177,7 @@ const styles = StyleSheet.create({
   form: { gap: 0 },
 
   generalError: {
-    color: '#FF6B6B',
+    color: '#EF4444',
     fontSize: 13,
     marginBottom: 12,
     textAlign: 'center',
@@ -185,6 +190,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 32,
   },
-  footerText: { color: 'rgba(255,255,255,0.45)', fontSize: 14 },
-  footerLink: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
+  footerText: { color: '#6B7280', fontSize: 14 },
+  footerLink: { color: '#7B00CC', fontSize: 14, fontWeight: '700' },
 });

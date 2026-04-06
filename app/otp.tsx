@@ -145,7 +145,7 @@ export default function OtpScreen() {
                     keyboardType="number-pad"
                     maxLength={1}
                     textAlign="center"
-                    selectionColor="#FFFFFF"
+                    selectionColor="#7B00CC"
                   />
                 ))}
             </View>
@@ -184,21 +184,21 @@ export default function OtpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A1628' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
   safe: { flex: 1 },
   content: { flex: 1, paddingHorizontal: 28, paddingTop: 16 },
 
   backBtn: { marginBottom: 28 },
-  backText: { color: 'rgba(255,255,255,0.55)', fontSize: 15 },
+  backText: { color: '#6B7280', fontSize: 15 },
 
-  title: { fontSize: 32, fontWeight: '800', color: '#FFFFFF', marginBottom: 8 },
+  title: { fontSize: 32, fontWeight: '800', color: '#111827', marginBottom: 8 },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.50)',
+    color: '#6B7280',
     lineHeight: 22,
     marginBottom: 40,
   },
-  identifier: { color: '#FFFFFF', fontWeight: '600' },
+  identifier: { color: '#111827', fontWeight: '600' },
 
   otpRow: {
     flexDirection: 'row',
@@ -210,22 +210,22 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.2)',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    color: '#FFFFFF',
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+    color: '#111827',
     fontSize: 22,
     fontWeight: '700',
   },
   otpBoxFilled: {
-    borderColor: '#FFFFFF',
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderColor: '#7B00CC',
+    backgroundColor: '#FFFFFF',
   },
 
-  errorText: { color: '#FF6B6B', fontSize: 13, textAlign: 'center', marginBottom: 8 },
+  errorText: { color: '#EF4444', fontSize: 13, textAlign: 'center', marginBottom: 8 },
 
   resendRow: { alignItems: 'center', marginVertical: 20 },
-  resendLink: { color: '#FFFFFF', fontSize: 14, fontWeight: '700', textDecorationLine: 'underline' },
-  resendTimer: { color: 'rgba(255,255,255,0.40)', fontSize: 14 },
+  resendLink: { color: '#7B00CC', fontSize: 14, fontWeight: '700', textDecorationLine: 'underline' },
+  resendTimer: { color: '#9CA3AF', fontSize: 14 },
 
   btn: { marginTop: 4 },
 
@@ -235,9 +235,9 @@ const styles = StyleSheet.create({
     marginTop: 24,
     alignItems: 'center',
   },
-  hintText: { color: 'rgba(255,255,255,0.35)', fontSize: 12 },
+  hintText: { color: '#9CA3AF', fontSize: 12 },
   hintCode: {
-    color: 'rgba(255,255,255,0.60)',
+    color: '#4B5563',
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1,

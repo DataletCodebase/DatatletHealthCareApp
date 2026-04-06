@@ -134,7 +134,7 @@ export default function CreatePasswordScreen() {
                                   : level <= 3
                                   ? '#4ADE80'
                                   : '#22D3EE'
-                                : 'rgba(255,255,255,0.12)',
+                                : '#E5E7EB',
                           },
                         ]}
                       />
@@ -171,17 +171,17 @@ export default function CreatePasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A1628' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
   safe: { flex: 1 },
   scroll: { flexGrow: 1, paddingHorizontal: 28, paddingTop: 16, paddingBottom: 40 },
 
   backBtn: { marginBottom: 28 },
-  backText: { color: 'rgba(255,255,255,0.55)', fontSize: 15 },
+  backText: { color: '#6B7280', fontSize: 15 },
 
-  title: { fontSize: 32, fontWeight: '800', color: '#FFFFFF', marginBottom: 8 },
+  title: { fontSize: 32, fontWeight: '800', color: '#111827', marginBottom: 8 },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.50)',
+    color: '#6B7280',
     lineHeight: 20,
     marginBottom: 36,
   },
@@ -201,14 +201,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   strengthLabel: {
-    color: 'rgba(255,255,255,0.45)',
+    color: '#9CA3AF',
     fontSize: 11,
     marginLeft: 4,
     width: 36,
   },
 
   generalError: {
-    color: '#FF6B6B',
+    color: '#EF4444',
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 12,

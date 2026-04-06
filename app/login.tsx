@@ -1,19 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import AuthButton from '@/components/AuthButton';
+import AuthInput from '@/components/AuthInput';
+import { sendPhoneOTP, signInWithEmailPassword } from '@/services/firebase';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
   Animated,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import AuthInput from '@/components/AuthInput';
-import AuthButton from '@/components/AuthButton';
-import { sendPhoneOTP, signInWithEmailPassword } from '@/services/firebase';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
+const TOGGLE_INNER_WIDTH = width - 56 - 8; // container width (width - 28 padding h x 2) minus inner padding (4x2)
+const HALF_TOGGLE_WIDTH = TOGGLE_INNER_WIDTH / 2;
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const isPhone = (v: string) => /^\+?[1-9]\d{7,14}$/.test(v.replace(/\s/g, ''));
@@ -88,8 +94,8 @@ export default function LoginScreen() {
         err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
           ? 'Invalid email or password.'
           : err.code === 'auth/too-many-requests'
-          ? 'Too many attempts. Please try again later.'
-          : err.message || 'Login failed. Please try again.';
+            ? 'Too many attempts. Please try again later.'
+            : err.message || 'Login failed. Please try again.';
       setErrors({ general: msg });
     } finally {
       setLoading(false);
@@ -98,7 +104,7 @@ export default function LoginScreen() {
 
   const tabTranslateX = tabSlide.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 150], // half of toggle width ~300
+    outputRange: [0, HALF_TOGGLE_WIDTH], 
   });
 
   return (
@@ -115,9 +121,11 @@ export default function LoginScreen() {
           >
             <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
               {/* Back */}
-              <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-                <Text style={styles.backText}>← Back</Text>
-              </TouchableOpacity>
+              <AuthButton
+                label="← Back"
+                onPress={() => router.back()}
+                style={styles.backBtn}
+              />
 
               <Text style={styles.title}>Welcome Back</Text>
               <Text style={styles.subtitle}>Log in to continue your wellness journey.</Text>
@@ -126,7 +134,14 @@ export default function LoginScreen() {
               <View style={styles.toggleContainer}>
                 <Animated.View
                   style={[styles.toggleIndicator, { transform: [{ translateX: tabTranslateX }] }]}
-                />
+                >
+                  <LinearGradient
+                    colors={['rgb(123, 0, 204)', 'rgb(204, 0, 255)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ flex: 1, borderRadius: 10 }}
+                  />
+                </Animated.View>
                 <TouchableOpacity style={styles.toggleBtn} onPress={() => switchMode('password')}>
                   <Text style={[styles.toggleLabel, mode === 'password' && styles.toggleLabelActive]}>
                     Password
@@ -191,17 +206,26 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A1628' },
-  safe: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  safe: {
+    flex: 1,
+
+  },
   scroll: { flexGrow: 1, paddingHorizontal: 28, paddingTop: 16, paddingBottom: 40 },
 
-  backBtn: { marginBottom: 28 },
-  backText: { color: 'rgba(255,255,255,0.55)', fontSize: 15 },
+  backBtn: {
+    marginBottom: 28,
+    marginTop: 30,
+    alignSelf: 'flex-start',
+  },
 
-  title: { fontSize: 32, fontWeight: '800', color: '#FFFFFF', marginBottom: 8 },
+  title: { fontSize: 32, fontWeight: '800', color: '#111827', marginBottom: 8 },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.50)',
+    color: '#6B7280',
     lineHeight: 20,
     marginBottom: 28,
   },
@@ -209,7 +233,7 @@ const styles = StyleSheet.create({
   // ── Toggle ──
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#F3F4F6',
     borderRadius: 14,
     padding: 4,
     marginBottom: 28,
@@ -223,26 +247,31 @@ const styles = StyleSheet.create({
     width: '50%',
     bottom: 4,
     borderRadius: 10,
-    backgroundColor: '#FFFFFF',
+    shadowColor: 'rgb(123, 0, 204)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
   },
   toggleBtn: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 1,
   },
   toggleLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255,255,255,0.45)',
+    color: '#9CA3AF',
   },
   toggleLabelActive: {
-    color: '#0A1628',
+    color: '#FFFFFF',
   },
 
   form: {},
   generalError: {
-    color: '#FF6B6B',
+    color: '#EF4444',
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 12,
@@ -254,6 +283,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 32,
   },
-  footerText: { color: 'rgba(255,255,255,0.45)', fontSize: 14 },
-  footerLink: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
+  footerText: { color: '#6B7280', fontSize: 14 },
+  footerLink: { color: '#7B00CC', fontSize: 14, fontWeight: '700' },
 });

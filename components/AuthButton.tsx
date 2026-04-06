@@ -8,6 +8,7 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface AuthButtonProps {
   label: string;
@@ -36,54 +37,73 @@ export default function AuthButton({
 
   const isPrimary = variant === 'primary';
 
+  const CustomButton = () => (
+    <Pressable
+      onPressIn={pressIn}
+      onPressOut={pressOut}
+      onPress={onPress}
+      disabled={disabled || loading}
+      style={[
+        styles.button,
+        !isPrimary && styles.outline,
+      ]}
+    >
+      {loading ? (
+        <ActivityIndicator color={isPrimary ? '#FFFFFF' : '#111827'} size="small" />
+      ) : (
+        <Text style={[styles.label, isPrimary ? styles.labelPrimary : styles.labelOutline]}>
+          {label}
+        </Text>
+      )}
+    </Pressable>
+  );
+
   return (
-    <Animated.View style={[{ transform: [{ scale }] }, style]}>
-      <Pressable
-        onPressIn={pressIn}
-        onPressOut={pressOut}
-        onPress={onPress}
-        disabled={disabled || loading}
-        style={[
-          styles.button,
-          isPrimary ? styles.primary : styles.outline,
-          (disabled || loading) && styles.disabled,
-        ]}
-      >
-        {loading ? (
-          <ActivityIndicator color={isPrimary ? '#0A1628' : '#FFFFFF'} size="small" />
-        ) : (
-          <Text style={[styles.label, isPrimary ? styles.labelPrimary : styles.labelOutline]}>
-            {label}
-          </Text>
-        )}
-      </Pressable>
+    <Animated.View style={[{ transform: [{ scale }] }, style, (disabled || loading) && styles.disabled]}>
+      {isPrimary ? (
+        <LinearGradient
+          colors={['rgb(123, 0, 204)', 'rgb(204, 0, 255)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.gradientContainer}
+        >
+          <CustomButton />
+        </LinearGradient>
+      ) : (
+        <CustomButton />
+      )}
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  gradientContainer: {
+    borderRadius: 16,
+    shadowColor: 'rgb(123, 0, 204)',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   button: {
-    borderRadius: 50,
-    height: 54,
+    borderRadius: 16,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  primary: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 8,
-  },
   outline: {
     borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.4)',
-    backgroundColor: 'transparent',
+    borderColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   label: {
     fontSize: 16,
@@ -91,9 +111,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   labelPrimary: {
-    color: '#0A1628',
+    color: '#FFFFFF',
   },
   labelOutline: {
-    color: '#FFFFFF',
+    color: '#111827',
   },
 });
