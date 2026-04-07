@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: any) => {
         const data = await loginAPI(payload);
         await authStorage.save(data.token, data.user);
         setUser(data.user);
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/dashboard' as any);
     };
 
     // 📱 OTP LOGIN (NEW)
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: any) => {
         const data = await otpLoginAPI(payload);
         await authStorage.save(data.token, data.user);
         setUser(data.user);
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/dashboard' as any);
     };
 
     // 📝 SIGNUP

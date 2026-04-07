@@ -40,7 +40,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuth } from '@/hooks/useAuth'; // ✅ IMPORTANT
+import { useAuth } from '@/hooks/useAuth';
 import { Redirect } from 'expo-router';
 
 export default function TabLayout() {
@@ -69,6 +69,16 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: 'Dashboard',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="heart.fill" color={color} />
           ),
         }}
       />
