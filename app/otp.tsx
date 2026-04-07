@@ -1,23 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import AuthButton from '@/components/AuthButton';
+import { sendPhoneOTP, verifyPhoneOTP } from '@/services/firebase';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
-  TouchableOpacity,
   Animated,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import AuthButton from '@/components/AuthButton';
-import { verifyPhoneOTP, sendPhoneOTP } from '@/services/firebase';
 
 const OTP_LENGTH = 6;
 
 export default function OtpScreen() {
   const router = useRouter();
+  const { otpLogin } = useAuth();
   const { mode, identifier, identifierType, firstName, lastName, verificationId } =
     useLocalSearchParams<{
       mode: string;
@@ -89,7 +91,7 @@ export default function OtpScreen() {
           params: { identifier, identifierType, firstName, lastName },
         });
       } else {
-        router.replace('/(tabs)');
+        await otpLogin({ identifier: Array.isArray(identifier) ? identifier[0] : identifier });
       }
     } catch (err: any) {
       setError(err.message || 'Invalid OTP. Please try again.');

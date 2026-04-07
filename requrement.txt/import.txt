@@ -5,3 +5,20 @@ npm install react-native-reanimated
 npx expo start
 npx expo install expo-linear-gradient
 npx expo install @react-native-async-storage/async-storage
+npm install mysql2 bcrypt jsonwebtoken
+npm install -D @types/bcrypt @types/jsonwebtoken
+npm install cors
+npm install -D @types/cors
+npm install express
+npm install -D @types/express
+npm install -D @types/node
+npm install jsonwebtoken
+npm install -D @types/jsonwebtoken
+
+
+
+To run the Backend api use this command:
+npx ts-node -P tsconfig.server.json src/server.ts
+
+To run the Frontend use this command:
+npx expo start

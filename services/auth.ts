@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API = "http://YOUR_IP:PORT/api/auth"; // 🔥 change this
+const API = "http://192.168.29.204:8080/auth"; // 🔥 change this
 
 export const authStorage = {
     save: async (token: string, user: any) => {
@@ -30,7 +30,22 @@ export const loginAPI = async (payload: any) => {
 
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(data?.message || "Login failed");
+
+    return data;
+};
+
+// 🔐 OTP LOGIN API (NEW)
+export const otpLoginAPI = async (payload: { identifier: string }) => {
+    const res = await fetch(`${API}/otp-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data?.message || "OTP Login failed");
 
     return data;
 };
@@ -45,7 +60,9 @@ export const signupAPI = async (payload: any) => {
 
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) {
+        throw new Error(data?.message || "Something went wrong");
+    }
 
     return data;
 };

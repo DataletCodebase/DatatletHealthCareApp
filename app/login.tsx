@@ -1,10 +1,14 @@
 import AuthButton from '@/components/AuthButton';
 import AuthInput from '@/components/AuthInput';
-import { sendPhoneOTP, signInWithEmailPassword } from '@/services/firebase';
+import { authStorage, loginAPI } from '@/services/auth';
+import { sendPhoneOTP } from '@/services/firebase';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -13,9 +17,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const TOGGLE_INNER_WIDTH = width - 56 - 8; // container width (width - 28 padding h x 2) minus inner padding (4x2)
@@ -70,32 +72,68 @@ export default function LoginScreen() {
     return Object.keys(e).length === 0;
   };
 
+  // const handleLogin = async () => {
+  //   if (!validate()) return;
+  //   setLoading(true);
+  //   try {
+  //     if (mode === 'otp') {
+  //       await sendPhoneOTP(identifier);
+  //       router.push({
+  //         pathname: '/otp',
+  //         params: { mode: 'login', identifier, identifierType: isEmail(identifier) ? 'email' : 'phone' },
+  //       });
+  //     } else {
+  //       // Password login — email only (Firebase)
+  //       if (!isEmail(identifier)) {
+  //         setErrors({ identifier: 'Password login requires an email address.' });
+  //         return;
+  //       }
+  //       await signInWithEmailPassword(identifier, password);
+  //       router.replace('/(tabs)');
+  //     }
+  //   } catch (err: any) {
+  //     const msg =
+  //       err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
+  //         ? 'Invalid email or password.'
+  //         : err.code === 'auth/too-many-requests'
+  //           ? 'Too many attempts. Please try again later.'
+  //           : err.message || 'Login failed. Please try again.';
+  //     setErrors({ general: msg });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const { login } = useAuth();
+
   const handleLogin = async () => {
     if (!validate()) return;
     setLoading(true);
+
     try {
       if (mode === 'otp') {
         await sendPhoneOTP(identifier);
         router.push({
           pathname: '/otp',
-          params: { mode: 'login', identifier, identifierType: isEmail(identifier) ? 'email' : 'phone' },
+          params: {
+            mode: 'login',
+            identifier,
+            identifierType: isEmail(identifier) ? 'email' : 'phone',
+          },
         });
       } else {
-        // Password login — email only (Firebase)
-        if (!isEmail(identifier)) {
-          setErrors({ identifier: 'Password login requires an email address.' });
-          return;
-        }
-        await signInWithEmailPassword(identifier, password);
-        router.replace('/(tabs)');
+        await login({
+          identifier,
+          password,
+        });
       }
     } catch (err: any) {
       const msg =
-        err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
-          ? 'Invalid email or password.'
-          : err.code === 'auth/too-many-requests'
-            ? 'Too many attempts. Please try again later.'
-            : err.message || 'Login failed. Please try again.';
+        err.message?.includes('not found')
+          ? 'User not found'
+          : err.message?.includes('Invalid')
+            ? 'Invalid password'
+            : err.message || 'Login failed';
+
       setErrors({ general: msg });
     } finally {
       setLoading(false);
@@ -104,7 +142,7 @@ export default function LoginScreen() {
 
   const tabTranslateX = tabSlide.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, HALF_TOGGLE_WIDTH], 
+    outputRange: [0, HALF_TOGGLE_WIDTH],
   });
 
   return (
@@ -123,7 +161,7 @@ export default function LoginScreen() {
               {/* Back */}
               <AuthButton
                 label="← Back"
-                onPress={() => router.back()}
+                onPress={() => router.replace('/')}
                 style={styles.backBtn}
               />
 

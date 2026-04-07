@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   scroll: { flexGrow: 1, paddingHorizontal: 28, paddingTop: 16, paddingBottom: 40 },
 
-  backBtn: { 
+  backBtn: {
     marginBottom: 28,
     marginTop: 20,
     alignSelf: 'flex-start',
