@@ -20,15 +20,19 @@ function InitialLayout() {
   useEffect(() => {
     if (loading) return;
 
-    const inAuthGroup = segments[0] === '(tabs)';
+    // Screens that unauthenticated users are allowed on
+    const publicRoutes = ['index', 'login', 'signup', 'otp', 'create-password'];
+    const isOnPublicRoute = publicRoutes.includes(segments[0] as string);
+    const isOnTabsRoute = segments[0] === '(tabs)';
 
-    if (user && !inAuthGroup) {
-      // Redirect to the main app if user is signed in
-      router.replace('/(tabs)');
-    } else if (!user && inAuthGroup) {
-      // Redirect to the login/welcome screen if user is NOT signed in
+    if (!user && !isOnPublicRoute && !isOnTabsRoute) {
+      // If not logged in and trying to access a protected screen → login
       router.replace('/');
+    } else if (user && isOnPublicRoute) {
+      // If logged in and somehow on a public (auth) screen → go to dashboard
+      router.replace('/(tabs)');
     }
+    // If user is logged in and on (tabs) or /profile → do nothing, let them stay
   }, [user, loading, segments]);
 
   return (

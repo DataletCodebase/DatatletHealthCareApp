@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks/useAuth';
+import DrawerMenu from '@/components/DrawerMenu';
 import DashboardHeader from './DashboardHeader';
 import FloatingCard from './FloatingCard';
 
@@ -17,13 +18,18 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user } = useAuth();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const userName: string = user?.name || user?.full_name || user?.email?.split('@')[0] || 'User';
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.container}>
         {/* Shared Header */}
-        <DashboardHeader userName={userName} credits={120} />
+        <DashboardHeader
+          userName={userName}
+          credits={120}
+          onMenuPress={() => setDrawerOpen(true)}
+        />
 
         <ScrollView
           style={styles.scroll}
@@ -76,6 +82,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <View style={styles.bottomSpacer} />
         </ScrollView>
       </View>
+
+      {/* Sliding Drawer Overlay */}
+      <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </SafeAreaView>
   );
 }

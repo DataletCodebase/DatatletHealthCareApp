@@ -22,3 +22,7 @@ npx ts-node -P tsconfig.server.json src/server.ts
 
 To run the Frontend use this command:
 npx expo start
+
+
+dt: 08/04/2026 ( for menu section )
+Installing 2 SDK 54.0.0 compatible native modules using npm
