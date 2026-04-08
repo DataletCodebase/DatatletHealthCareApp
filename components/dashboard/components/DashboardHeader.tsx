@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useAuth } from '@/hooks/useAuth';
 
 const { width } = Dimensions.get('window');
 
@@ -20,6 +21,9 @@ export default function DashboardHeader({
   credits = 120,
   onMenuPress,
 }: DashboardHeaderProps) {
+  const { logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const initials = userName
     .split(' ')
     .map((n) => n[0])
@@ -42,15 +46,34 @@ export default function DashboardHeader({
         <Text style={styles.name}>{userName}</Text>
       </View>
 
-      {/* Right: Credits Badge */}
+      {/* Right: Credits Badge & Avatar */}
       <View style={styles.badgeContainer}>
         <View style={styles.badge}>
           <Text style={styles.badgeEmoji}>⚡</Text>
           <Text style={styles.badgeText}>{credits}</Text>
         </View>
-        <View style={styles.avatar}>
+        <TouchableOpacity 
+          style={styles.avatar} 
+          onPress={() => setIsMenuOpen(!isMenuOpen)}
+          activeOpacity={0.8}
+        >
           <Text style={styles.avatarText}>{initials}</Text>
-        </View>
+        </TouchableOpacity>
+
+        {/* 📋 Dropdown Menu */}
+        {isMenuOpen && (
+          <View style={styles.dropdown}>
+            <TouchableOpacity 
+              style={styles.dropdownItem} 
+              onPress={() => {
+                setIsMenuOpen(false);
+                logout();
+              }}
+            >
+              <Text style={styles.logoutText}>🚪 Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -64,6 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
+    zIndex: 1000,
   },
   menuBtn: {
     width: 40,
@@ -96,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    position: 'relative',
   },
   badge: {
     flexDirection: 'row',
@@ -119,10 +144,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#7B4FD8',
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   avatarText: {
     color: '#FFF',
     fontWeight: '700',
+    fontSize: 14,
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 45,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 8,
+    width: 120,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  logoutText: {
+    color: '#EF4444',
+    fontWeight: '600',
     fontSize: 14,
   },
 });

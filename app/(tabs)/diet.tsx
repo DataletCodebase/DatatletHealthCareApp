@@ -1,11 +1,11 @@
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/components/DashboardLayout';
-import TodayActivity from '@/components/dashboard/sections/TodayActivity';
+import Diet from '@/components/dashboard/sections/Diet';
 
-export default function TodayScreen() {
+export default function DietScreen() {
   return (
     <DashboardLayout>
-      <TodayActivity />
+      <Diet />
     </DashboardLayout>
   );
 }

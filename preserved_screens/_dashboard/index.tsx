@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks/useAuth';
-import DashboardHeader from './components/DashboardHeader';
-import FloatingCard from './components/FloatingCard';
-import TabSwitcher, { TabKey } from './components/TabSwitcher';
-import TodayActivity from './sections/TodayActivity';
-import SleepWellness from './sections/SleepWellness';
-import BodyVitals from './sections/BodyVitals';
-import Diet from './sections/Diet';
+import DashboardHeader from '@/components/dashboard/components/DashboardHeader';
+import FloatingCard from '@/components/dashboard/components/FloatingCard';
+import TabSwitcher, { TabKey } from '@/components/dashboard/components/TabSwitcher';
+import TodayActivity from '@/components/dashboard/sections/TodayActivity';
+import SleepWellness from '@/components/dashboard/sections/SleepWellness';
+import BodyVitals from '@/components/dashboard/sections/BodyVitals';
+import Diet from '@/components/dashboard/sections/Diet';
 
 export default function DashboardScreen() {
   const { user, logout } = useAuth();
