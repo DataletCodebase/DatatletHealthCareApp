@@ -57,7 +57,7 @@ export default function WelcomeScreen() {
     if (status.isLoaded && !videoLoaded) {
       setVideoLoaded(true);
       if (videoRef.current) {
-        videoRef.current.playAsync();
+        videoRef.current.playAsync().catch(() => {});
       }
     }
   };
@@ -79,7 +79,6 @@ export default function WelcomeScreen() {
         resizeMode={ResizeMode.COVER}
         isLooping
         isMuted
-        shouldPlay
         onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
       />
 

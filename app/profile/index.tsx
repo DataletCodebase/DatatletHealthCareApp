@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import {
   ScrollView,
@@ -20,19 +20,12 @@ import EmergencyContacts from '@/components/profile/sections/EmergencyContacts';
 import MedicalConditions from '@/components/profile/sections/MedicalConditions';
 import Prescriptions from '@/components/profile/sections/Prescriptions';
 
-const TABS = [
-  { id: 'profile', label: 'Profile', icon: '👤' },
-  { id: 'health', label: 'Health', icon: '🩺' },
-];
-
 export default function ProfileScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams<{ section?: string }>();
 
-  // If "Health Profile" drawer item was tapped, open directly on health tab
-  const initialTab = params.section === 'health' ? 'health' : 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'health'>(initialTab);
+  const isHealthView = params.section === 'health';
 
   const userName: string =
     user?.name || user?.full_name || user?.email?.split('@')[0] || 'User';
@@ -41,33 +34,19 @@ export default function ProfileScreen() {
   const firstName = userName.split(' ')[0] || '';
   const lastName = userName.split(' ').slice(1).join(' ') || '';
 
+  const handleBack = () => {
+    router.replace('/(tabs)?openDrawer=true' as any);
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* Custom Top Bar */}
       <View style={styles.topBar}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.backBtn} onPress={handleBack} activeOpacity={0.7}>
           <Text style={styles.backIcon}>‹</Text>
         </TouchableOpacity>
-        <Text style={styles.topBarTitle}>My Profile</Text>
+        <Text style={styles.topBarTitle}>{isHealthView ? 'Medical Profile' : 'My Profile'}</Text>
         <View style={styles.topBarRight} />
-      </View>
-
-      {/* Tab Switcher */}
-      <View style={styles.tabBar}>
-        {TABS.map((tab) => (
-          <TouchableOpacity
-            key={tab.id}
-            style={[styles.tab, activeTab === tab.id && styles.tabActive]}
-            onPress={() => setActiveTab(tab.id as 'profile' | 'health')}
-            activeOpacity={0.75}
-          >
-            <Text style={styles.tabIcon}>{tab.icon}</Text>
-            <Text style={[styles.tabLabel, activeTab === tab.id && styles.tabLabelActive]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
       </View>
 
       <ScrollView
@@ -78,24 +57,23 @@ export default function ProfileScreen() {
         {/* Profile Header Banner */}
         <ProfileHeader name={userName} email={userEmail} />
 
-        {/* ─── PROFILE TAB ─── */}
-        {activeTab === 'profile' && (
-          <View style={styles.tabContent}>
-            <BasicProfile
-              initialData={{ firstName, lastName, email: userEmail }}
-            />
-            <ChangePlan currentPlan="premium" />
-          </View>
-        )}
-
-        {/* ─── HEALTH TAB ─── */}
-        {activeTab === 'health' && (
-          <View style={styles.tabContent}>
-            <MedicalConditions />
-            <Prescriptions />
-            <EmergencyContacts />
-          </View>
-        )}
+        {/* CONTENT */}
+        <View style={styles.tabContent}>
+          {isHealthView ? (
+            <React.Fragment>
+              <MedicalConditions />
+              <Prescriptions />
+              <EmergencyContacts />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <BasicProfile
+                initialData={{ firstName, lastName, email: userEmail }}
+              />
+              <ChangePlan currentPlan="premium" />
+            </React.Fragment>
+          )}
+        </View>
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
@@ -130,7 +108,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 26,
-    color: '#7B4FD8',
+    color: '#7B00CC',
     fontWeight: '300',
     lineHeight: 28,
   },
@@ -142,41 +120,6 @@ const styles = StyleSheet.create({
     color: '#1A1A2E',
   },
   topBarRight: { width: 40 },
-
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    borderRadius: 16,
-    padding: 4,
-    marginBottom: 8,
-    shadowColor: '#7B4FD8',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 13,
-    gap: 6,
-  },
-  tabActive: {
-    backgroundColor: '#7B4FD8',
-  },
-  tabIcon: { fontSize: 15 },
-  tabLabel: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#9CA3AF',
-  },
-  tabLabelActive: {
-    color: '#FFFFFF',
-  },
 
   scroll: {
     flex: 1,

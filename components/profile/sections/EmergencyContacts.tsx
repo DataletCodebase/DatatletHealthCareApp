@@ -14,18 +14,26 @@ interface Contact {
   name: string;
   relation: string;
   phone: string;
+  email: string;
 }
 
-const EMPTY_CONTACT: Contact = { name: '', relation: '', phone: '' };
+const EMPTY_CONTACT: Contact = { name: '', relation: '', phone: '', email: '' };
 
 export default function EmergencyContacts() {
   const [contacts, setContacts] = useState<Contact[]>([{ ...EMPTY_CONTACT }]);
+  const [errors, setErrors] = useState<{ [key: number]: Partial<Contact> }>({});
   const [saved, setSaved] = useState(false);
 
   const handleChange = (index: number, field: keyof Contact, value: string) => {
     setContacts((prev) =>
       prev.map((c, i) => (i === index ? { ...c, [field]: value } : c))
     );
+    // Clear error for this field when typing
+    if (errors[index]?.[field]) {
+      const newIndexErrors = { ...errors[index] };
+      delete newIndexErrors[field];
+      setErrors({ ...errors, [index]: newIndexErrors });
+    }
   };
 
   const addContact = () => {
@@ -52,17 +60,49 @@ export default function EmergencyContacts() {
   };
 
   const validate = () => {
-    for (const c of contacts) {
-      if (!c.name.trim()) return false;
-      if (!c.relation.trim()) return false;
-      if (!c.phone.trim() || c.phone.length < 10) return false;
-    }
-    return true;
+    const newErrors: { [key: number]: Partial<Contact> } = {};
+    let isValid = true;
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    contacts.forEach((c, index) => {
+      const indexErrors: Partial<Contact> = {};
+      
+      if (!c.name.trim()) {
+        indexErrors.name = 'Name is required';
+      } else if (!nameRegex.test(c.name)) {
+        indexErrors.name = 'Letters only';
+      }
+
+      if (!c.relation.trim()) {
+        indexErrors.relation = 'Relation is required';
+      }
+
+      if (!c.phone.trim()) {
+        indexErrors.phone = 'Phone is required';
+      } else if (!phoneRegex.test(c.phone)) {
+        indexErrors.phone = '10 digits';
+      }
+
+      if (c.email.trim() && !emailRegex.test(c.email)) {
+        indexErrors.email = 'Invalid email';
+      }
+
+      if (Object.keys(indexErrors).length > 0) {
+        newErrors[index] = indexErrors;
+        isValid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSave = () => {
     if (!validate()) {
-      Alert.alert('Incomplete', 'Please fill in all contact fields with valid phone numbers.');
+      Alert.alert('Validation Error', 'Please fix the errors in your emergency contacts.');
       return;
     }
     setSaved(true);
@@ -93,21 +133,40 @@ export default function EmergencyContacts() {
           <InputField
             label="Full Name"
             value={contact.name}
-            onChangeText={(v) => handleChange(index, 'name', v)}
+            onChangeText={(v) => {
+              const alphaValue = v.replace(/[^A-Za-z\s]/g, '');
+              handleChange(index, 'name', alphaValue);
+            }}
             placeholder="e.g. Rahul Swain"
+            error={errors[index]?.name}
           />
           <InputField
             label="Relation"
             value={contact.relation}
             onChangeText={(v) => handleChange(index, 'relation', v)}
             placeholder="e.g. Father, Sister, Spouse"
+            error={errors[index]?.relation}
           />
           <InputField
             label="Phone Number"
             value={contact.phone}
-            onChangeText={(v) => handleChange(index, 'phone', v)}
-            placeholder="+91 XXXXX XXXXX"
-            keyboardType="phone-pad"
+            onChangeText={(v) => {
+              const numericValue = v.replace(/[^0-9]/g, '');
+              handleChange(index, 'phone', numericValue);
+            }}
+            placeholder="e.g. 9876543210"
+            keyboardType="number-pad"
+            maxLength={10}
+            error={errors[index]?.phone}
+          />
+          <InputField
+            label="Email Address"
+            value={contact.email}
+            onChangeText={(v) => handleChange(index, 'email', v)}
+            placeholder="contact@example.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            error={errors[index]?.email}
           />
         </View>
       ))}
@@ -121,7 +180,7 @@ export default function EmergencyContacts() {
       {/* Save Button */}
       <TouchableOpacity onPress={handleSave} activeOpacity={0.85} style={styles.saveBtn}>
         <LinearGradient
-          colors={['#7B4FD8', '#E040FB']}
+          colors={['#7B00CC', '#CC00FF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.saveBtnGradient}

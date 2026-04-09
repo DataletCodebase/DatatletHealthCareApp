@@ -8,9 +8,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks/useAuth';
+import { useNavigation } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
 import DrawerMenu from '@/components/DrawerMenu';
 import DashboardHeader from './DashboardHeader';
 import FloatingCard from './FloatingCard';
+import { useEffect } from 'react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,8 +21,23 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user } = useAuth();
+  const navigation = useNavigation();
+  const params = useLocalSearchParams<{ openDrawer?: string }>();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const userName: string = user?.name || user?.full_name || user?.email?.split('@')[0] || 'User';
+
+  useEffect(() => {
+    if (params.openDrawer === 'true') {
+      setDrawerOpen(true);
+    }
+  }, [params.openDrawer]);
+
+  useEffect(() => {
+    // Hide the main tab bar when the drawer is open
+    navigation.setOptions({
+      tabBarStyle: { display: drawerOpen ? 'none' : 'flex' },
+    });
+  }, [drawerOpen, navigation]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -39,7 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Shared Banner Card */}
           <View style={styles.bannerWrapper}>
             <LinearGradient
-              colors={['#7B4FD8', '#B06EF5', '#E040FB']}
+              colors={['#7B00CC', '#CC00FF']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.banner}

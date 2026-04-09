@@ -12,28 +12,34 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+import { ActivityIndicator, View } from 'react-native';
+
 function InitialLayout() {
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
+  const publicRoutes = ['index', 'login', 'signup', 'otp', 'create-password'];
+  const isOnPublicRoute = !segments[0] || publicRoutes.includes(segments[0] as string);
+  const isOnTabsRoute = segments[0] === '(tabs)';
+
   useEffect(() => {
     if (loading) return;
 
-    // Screens that unauthenticated users are allowed on
-    const publicRoutes = ['index', 'login', 'signup', 'otp', 'create-password'];
-    const isOnPublicRoute = publicRoutes.includes(segments[0] as string);
-    const isOnTabsRoute = segments[0] === '(tabs)';
-
     if (!user && !isOnPublicRoute && !isOnTabsRoute) {
-      // If not logged in and trying to access a protected screen → login
       router.replace('/');
     } else if (user && isOnPublicRoute) {
-      // If logged in and somehow on a public (auth) screen → go to dashboard
       router.replace('/(tabs)');
     }
-    // If user is logged in and on (tabs) or /profile → do nothing, let them stay
-  }, [user, loading, segments]);
+  }, [user, loading, segments, isOnPublicRoute, isOnTabsRoute]);
+
+  // Prevent ANY glimpse of the landing page if the user is logged in
+  // We show a blank screen while loading OR while we are waiting for the redirect to /(tabs)
+  if (loading || (user && isOnPublicRoute)) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#F5F6FA' }} />
+    );
+  }
 
   return (
     <Stack>
@@ -43,6 +49,7 @@ function InitialLayout() {
       <Stack.Screen name="otp" options={{ headerShown: false }} />
       <Stack.Screen name="create-password" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
     </Stack>
   );

@@ -107,7 +107,7 @@ export default function DrawerMenu({ isOpen, onClose }: DrawerMenuProps) {
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         {/* Header - gradient */}
         <LinearGradient
-          colors={['#7B4FD8', '#B06EF5', '#E040FB']}
+          colors={['#7B00CC', '#CC00FF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.drawerHeader}

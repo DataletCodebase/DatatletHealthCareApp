@@ -21,9 +21,6 @@ export default function DashboardHeader({
   credits = 120,
   onMenuPress,
 }: DashboardHeaderProps) {
-  const { logout } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const initials = userName
     .split(' ')
     .map((n) => n[0])
@@ -52,28 +49,9 @@ export default function DashboardHeader({
           <Text style={styles.badgeEmoji}>⚡</Text>
           <Text style={styles.badgeText}>{credits}</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.avatar} 
-          onPress={() => setIsMenuOpen(!isMenuOpen)}
-          activeOpacity={0.8}
-        >
+        <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
-        </TouchableOpacity>
-
-        {/* 📋 Dropdown Menu */}
-        {isMenuOpen && (
-          <View style={styles.dropdown}>
-            <TouchableOpacity 
-              style={styles.dropdownItem} 
-              onPress={() => {
-                setIsMenuOpen(false);
-                logout();
-              }}
-            >
-              <Text style={styles.logoutText}>🚪 Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        </View>
       </View>
     </View>
   );
@@ -98,7 +76,7 @@ const styles = StyleSheet.create({
   menuLine: {
     width: 22,
     height: 2.5,
-    backgroundColor: '#1A1A2E',
+    backgroundColor: '#1A1C1E',
     borderRadius: 2,
   },
   center: {
@@ -113,7 +91,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: '#1A1C1E',
     marginTop: 1,
   },
   badgeContainer: {
@@ -141,7 +119,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#7B4FD8',
+    backgroundColor: '#7B00CC',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 2,
@@ -153,32 +131,6 @@ const styles = StyleSheet.create({
   avatarText: {
     color: '#FFF',
     fontWeight: '700',
-    fontSize: 14,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 45,
-    right: 0,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 8,
-    width: 120,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
-  },
-  dropdownItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
-  logoutText: {
-    color: '#EF4444',
-    fontWeight: '600',
     fontSize: 14,
   },
 });

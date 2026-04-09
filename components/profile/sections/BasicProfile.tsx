@@ -27,12 +27,37 @@ export default function BasicProfile({ initialData = {} }: BasicProfileProps) {
 
   const validate = () => {
     const newErrors: Partial<BasicProfileData> = {};
-    if (!data.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!data.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!data.email.trim() || !data.email.includes('@'))
-      newErrors.email = 'Valid email is required';
-    if (!data.mobile.trim() || data.mobile.length < 10)
-      newErrors.mobile = 'Enter a valid 10-digit number';
+    
+    // Name validation: Letters and spaces only
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!data.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    } else if (!nameRegex.test(data.firstName)) {
+      newErrors.firstName = 'Names cannot contain numbers or special characters';
+    }
+
+    if (!data.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    } else if (!nameRegex.test(data.lastName)) {
+      newErrors.lastName = 'Names cannot contain numbers or special characters';
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!emailRegex.test(data.email)) {
+      newErrors.email = 'Enter a valid email address';
+    }
+
+    // Mobile validation: Exactly 10 digits
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!data.mobile.trim()) {
+      newErrors.mobile = 'Mobile number is required';
+    } else if (!mobileRegex.test(data.mobile)) {
+      newErrors.mobile = 'Enter a valid 10-digit numeric mobile number';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -49,14 +74,20 @@ export default function BasicProfile({ initialData = {} }: BasicProfileProps) {
       <InputField
         label="First Name"
         value={data.firstName}
-        onChangeText={(v) => setData({ ...data, firstName: v })}
+        onChangeText={(v) => {
+          const alphaValue = v.replace(/[^A-Za-z\s]/g, '');
+          setData({ ...data, firstName: alphaValue });
+        }}
         placeholder="Enter first name"
         error={errors.firstName}
       />
       <InputField
         label="Last Name"
         value={data.lastName}
-        onChangeText={(v) => setData({ ...data, lastName: v })}
+        onChangeText={(v) => {
+          const alphaValue = v.replace(/[^A-Za-z\s]/g, '');
+          setData({ ...data, lastName: alphaValue });
+        }}
         placeholder="Enter last name"
         error={errors.lastName}
       />
@@ -72,15 +103,19 @@ export default function BasicProfile({ initialData = {} }: BasicProfileProps) {
       <InputField
         label="Mobile Number"
         value={data.mobile}
-        onChangeText={(v) => setData({ ...data, mobile: v })}
-        placeholder="+91 XXXXX XXXXX"
-        keyboardType="phone-pad"
+        onChangeText={(v) => {
+          const numericValue = v.replace(/[^0-9]/g, '');
+          setData({ ...data, mobile: numericValue });
+        }}
+        placeholder="e.g. 9876543210"
+        keyboardType="number-pad"
+        maxLength={10}
         error={errors.mobile}
       />
 
       <TouchableOpacity onPress={handleSave} activeOpacity={0.85} style={styles.saveBtn}>
         <LinearGradient
-          colors={['#7B4FD8', '#E040FB']}
+          colors={['#7B00CC', '#CC00FF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.saveBtnGradient}
