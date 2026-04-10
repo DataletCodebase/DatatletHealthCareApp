@@ -9,7 +9,12 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to provide personalized health data near you.",
+        "NSCameraUsageDescription": "This app needs access to your camera to allow you to upload profile pictures and medical documents.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photos to allow you to upload documents and profile images."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +25,15 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.DataletHealthcareApp"
+      "package": "com.anonymous.DataletHealthcareApp",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES"
+      ]
     },
     "web": {
       "output": "static",

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API = "http://10.176.64.26:8080/auth"; // 🔥 change your metrocode here 
+const API = "http://192.168.31.52:8080/auth"; // 🔥 change your metrocode here 
 
 export const authStorage = {
     save: async (token: string, user: any) => {

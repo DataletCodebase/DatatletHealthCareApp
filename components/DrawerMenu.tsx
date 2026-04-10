@@ -23,6 +23,7 @@ interface DrawerMenuProps {
 const MENU_ITEMS = [
   { id: 'profile', icon: '👤', label: 'Profile', subtitle: 'View & edit your info' },
   { id: 'health', icon: '🩺', label: 'Health Profile', subtitle: 'Medical conditions & records' },
+  { id: 'settings', icon: '⚙️', label: 'Settings', subtitle: 'App preferences & permissions' },
   { id: 'logout', icon: '🚪', label: 'Logout', subtitle: 'Sign out of your account' },
 ];
 
@@ -84,6 +85,8 @@ export default function DrawerMenu({ isOpen, onClose }: DrawerMenuProps) {
         router.push({ pathname: '/profile' } as any);
       } else if (id === 'health') {
         router.push({ pathname: '/profile', params: { section: 'health' } } as any);
+      } else if (id === 'settings') {
+        router.push({ pathname: '/profile/settings' } as any);
       } else if (id === 'logout') {
         logout();
       }
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: DRAWER_WIDTH,
-    height: height,
+    height: '100%',
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 4, height: 0 },
